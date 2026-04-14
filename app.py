@@ -34,8 +34,8 @@ def get_weather():
 
     try:
         response = requests.get(url, timeout=5).json()
-    except:
-        return render_template('index.html', weather="API Error!")
+    except Exception as e:
+        return render_template('index.html', weather="API Error! Try again.")
 
     if response.get("cod") == 200:
         temp = response['main']['temp']
