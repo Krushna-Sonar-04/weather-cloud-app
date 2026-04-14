@@ -6,36 +6,37 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# ✅ Create storage folder if not exists
+# ✅ Create storage folder
 os.makedirs("storage", exist_ok=True)
 
-# 🔐 FIXED ENCRYPTION KEY (PASTE YOUR GENERATED KEY HERE)
+# 🔐 Encryption key
 key = b'VJRBbmg-x99IckyLzPxvxP5lhB7EcSaojJVT_2IY7sE='
 cipher = Fernet(key)
 
-# 🌐 OPENWEATHER API KEY
-
+# 🌐 API key from environment
 API_KEY = os.environ.get("API_KEY")
-if not API_KEY:
-    return "API key not configured properly!"
 
-# 🏠 Home page
+# 🏠 Home
 @app.route('/')
 def home():
     return render_template('index.html', weather="")
 
-# 🌦 Get weather
+# 🌦 Weather + Encrypt + Split
 @app.route('/get_weather', methods=['POST'])
 def get_weather():
     city = request.form['city']
 
+    # ✅ Handle missing API key
+    if not API_KEY:
+        return render_template('index.html', weather="API key not configured!")
+
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+
     try:
         response = requests.get(url, timeout=5).json()
     except:
         return render_template('index.html', weather="API Error!")
 
-    # ✅ Reliable check
     if response.get("cod") == 200:
         temp = response['main']['temp']
         weather_desc = response['weather'][0]['description']
@@ -44,15 +45,15 @@ def get_weather():
 
         data = f"City: {city}, Temp: {temp}°C, Weather: {weather_desc}, Time: {current_time}"
 
-        # 🔐 Encrypt data
+        # 🔐 Encrypt
         encrypted_data = cipher.encrypt(data.encode())
 
-        # ✂ Split into 2 parts
+        # ✂ Split
         mid = len(encrypted_data) // 2
         part1 = encrypted_data[:mid]
         part2 = encrypted_data[mid:]
 
-        # 💾 Save parts
+        # 💾 Save
         with open("storage/part1.bin", "wb") as f:
             f.write(part1)
 
@@ -74,13 +75,10 @@ def download():
         with open("storage/part2.bin", "rb") as f:
             part2 = f.read()
 
-        # 🔗 Merge
         encrypted_data = part1 + part2
 
-        # 🔓 Decrypt
         decrypted_data = cipher.decrypt(encrypted_data)
 
-        # 💾 Save final file
         with open("storage/final.txt", "wb") as f:
             f.write(decrypted_data)
 
@@ -89,6 +87,6 @@ def download():
     except:
         return "⚠️ No file found. First fetch weather!"
 
-# ▶️ Run app
+# ▶️ Run
 if __name__ == "__main__":
-    app.run
+    app.run()
