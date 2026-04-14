@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Forecast App</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    background: linear-gradient(135deg, #0a0f1e, #1a3a6b);
+    color: white;
+}
+
+/* NAV */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background: rgba(0,0,0,0.3);
+}
+
+.logo {
+    font-weight: 600;
+}
+
+.nav-links a {
+    margin-left: 20px;
+    color: #8ba3cc;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 450px;
+    margin: auto;
+}
+
+/* INPUT */
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+    background: #0f172a;
+    color: white;
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #00d4ff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* CHIPS */
+.chips span {
+    display: inline-block;
+    margin: 5px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #1e293b;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.chips span:hover {
+    background: #00d4ff;
+    color: black;
+}
+
+/* RESULT */
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background: #020617;
+    border-radius: 10px;
+}
+
+/* ABOUT */
+.about {
+    display: none;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.about p {
+    color: #8ba3cc;
+    line-height: 1.8;
+}
+
+/* FOOTER */
+footer {
+    margin-top: 60px;
+    background: #020617;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+footer p {
+    color: #94a3b8;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+    <div class="logo">WeatherApp</div>
+    <div class="nav-links">
+        <a onclick="showHome()">Home</a>
+        <a onclick="showAbout()">About</a>
+    </div>
+</nav>
+
+<!-- HOME -->
+<section class="hero" id="homeSection">
+
+    <h1>Weather Forecast</h1>
+    <p style="color:#8ba3cc;">Check weather for any city</p>
+
+    <div class="card">
+        <form action="/get_weather" method="post">
+            <input type="text" name="city" id="cityInput" placeholder="Enter city..." required>
+            <button type="submit">Check Weather</button>
+        </form>
+
+        <div class="chips">
+            <span onclick="fillCity('Pune')">Pune</span>
+            <span onclick="fillCity('Mumbai')">Mumbai</span>
+            <span onclick="fillCity('Delhi')">Delhi</span>
+            <span onclick="fillCity('London')">London</span>
+        </div>
+
+        {% if weather %}
+<a href="/download" style="
+    display:inline-block;
+    padding:10px 18px;
+    background:#f5c842;
+    color:black;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:600;
+">
+Download Report
+</a>
+
+    <br><br>
+
+    <a href="/download" style="
+        display:inline-block;
+        padding:10px 18px;
+        background:#f5c842;
+        color:black;
+        border-radius:6px;
+        text-decoration:none;
+        font-weight:600;
+    ">
+        Download Report
+    </a>
+</div>
+{% endif %}
+    </div>
+
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="aboutSection">
+
+    <h2>About This Project</h2>
+
+    <p>
+        This Weather Forecast App is a mini project developed to demonstrate the concept 
+        of Software as a Service (SaaS) using a simple web-based application.
+    </p>
+
+    <p>
+        The project focuses on understanding cloud-based systems, web development using Flask, 
+        and client-server interaction.
+    </p>
+
+    <br>
+
+    <h3>Team Members</h3>
+    <p>
+        • Krushna Sonar <br>
+        • Om Talape <br>
+        • Spandan Thul <br>
+        • Srushti Patil
+    </p>
+
+    <br>
+
+    <h3>Work Contribution</h3>
+    <p>
+        • Frontend UI Design <br>
+        • Backend Integration using Flask <br>
+        • Data Handling and Display <br>
+        • Testing and Final Implementation
+    </p>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>"Simple ideas can create powerful solutions."</p>
+    <p>
+        <b style="color:white;">Krushna Sonar</b><br>
+        TE Computer Engineering<br>
+        International Institute of Information Technology, Pune
+    </p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+function fillCity(name) {
+    document.getElementById("cityInput").value = name;
+}
+
+function showAbout() {
+    document.getElementById("homeSection").style.display = "none";
+    document.getElementById("aboutSection").style.display = "block";
+}
+
+function showHome() {
+    document.getElementById("homeSection").style.display = "block";
+    document.getElementById("aboutSection").style.display = "none";
+}
+</script>
+
+</body>
+</html>
