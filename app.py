@@ -16,6 +16,8 @@ cipher = Fernet(key)
 # 🌐 OPENWEATHER API KEY
 
 API_KEY = os.environ.get("API_KEY")
+if not API_KEY:
+    return "API key not configured properly!"
 
 # 🏠 Home page
 @app.route('/')
@@ -27,8 +29,11 @@ def home():
 def get_weather():
     city = request.form['city']
 
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
-    response = requests.get(url).json()
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    try:
+        response = requests.get(url, timeout=5).json()
+    except:
+        return render_template('index.html', weather="API Error!")
 
     # ✅ Reliable check
     if response.get("cod") == 200:
